@@ -7,9 +7,35 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Smart-reading-assistant</h1>
-    <input type="text" id="searchInput" placeholder="Search books..."/>
-    <button onclick="searchBooks()">Search</button>
+    <header class="page-header">
+        <div class="header-main">
+            <div class="header-top-row">
+                <h1>Smart Reading Assistant</h1>
+                <div class="search-row">
+                    <input type="text" id="searchInput" placeholder="Search books..." />
+                    <button type="button" onclick="searchBooks()">Search</button>
+                </div>
+                <div class="genre-row">
+                    <select id="genreSelect" aria-label="Choose a genre">
+                        <option value="">Choose a genre</option>
+                        <option value="fantasy">Fantasy</option>
+                        <option value="romance">Romance</option>
+                        <option value="mystery">Mystery</option>
+                        <option value="science_fiction">Science Fiction</option>
+                        <option value="history">History</option>
+                        <option value="horror">Horror</option>
+                        <option value="biography">Biography</option>
+                        <option value="adventure">Adventure</option>
+                    </select>
+                    <button type="button" onclick="browseGenre()">Browse Genre</button>
+                </div>
+            </div>
+            <p class="subtitle">Search books or browse a full list by genre in light or dark mode</p>
+        </div>
+        <button id="themeToggle" type="button">Dark mode</button>
+    </header>
+
+    <div id="resultsTitle" class="results-title"></div>
     <div id="results"></div>
     <script src="script.js"></script>
 </body>
