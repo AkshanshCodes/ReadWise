@@ -35,14 +35,9 @@ function createBookCard(book) {
   publishYear.className = "book-meta";
   publishYear.textContent = publishYearText;
 
-  const ebookStatus = document.createElement("p");
-  ebookStatus.className = "book-meta";
-  ebookStatus.textContent = "Ebook available: " + book.ebookText;
-
   details.appendChild(title);
   details.appendChild(author);
   details.appendChild(publishYear);
-  details.appendChild(ebookStatus);
 
   cardInner.appendChild(coverElement);
   cardInner.appendChild(details);
@@ -87,7 +82,6 @@ function formatBookData(book) {
   let coverId = null;
   let publishYear = null;
   let title = "Untitled";
-  let ebookText = "No";
 
   if (book.title) {
     title = book.title;
@@ -105,18 +99,11 @@ function formatBookData(book) {
     publishYear = book.first_publish_year;
   }
 
-  if (book.ebook_access && book.ebook_access !== "no_ebook") {
-    ebookText = "Yes";
-  } else if (book.has_fulltext) {
-    ebookText = "Yes";
-  }
-
   return {
     title: title,
     author: author,
     cover_i: coverId,
     first_publish_year: publishYear,
-    ebookText: ebookText,
   };
 }
 
@@ -125,7 +112,6 @@ function formatSubjectBookData(book) {
   let coverId = null;
   let publishYear = null;
   let title = "Untitled";
-  let ebookText = "No";
 
   if (book.title) {
     title = book.title;
@@ -143,16 +129,11 @@ function formatSubjectBookData(book) {
     publishYear = book.first_publish_year;
   }
 
-  if (book.availability && book.availability.status) {
-    ebookText = book.availability.status === "full access" ? "Yes" : "No";
-  }
-
   return {
     title: title,
     author: author,
     cover_i: coverId,
     first_publish_year: publishYear,
-    ebookText: ebookText,
   };
 }
 
@@ -209,6 +190,39 @@ function formatGenreName(genreValue) {
   return formattedName;
 }
 
+function setTheme(theme) {
+  const isDarkTheme = theme === "dark";
+  const themeToggleButton = document.getElementById("themeToggle");
+
+  document.body.classList.toggle("dark-mode", isDarkTheme);
+  document.body.classList.toggle("light-mode", !isDarkTheme);
+
+  if (isDarkTheme) {
+    themeToggleButton.textContent = "Light mode";
+  } else {
+    themeToggleButton.textContent = "Dark mode";
+  }
+
+  localStorage.setItem("preferredTheme", theme);
+}
+
+function toggleTheme() {
+  const isDarkTheme = document.body.classList.contains("dark-mode");
+
+  if (isDarkTheme) {
+    setTheme("light");
+  } else {
+    setTheme("dark");
+  }
+}
+
+window.addEventListener("DOMContentLoaded", function () {
+  const savedTheme = localStorage.getItem("preferredTheme") || "light";
+  setTheme(savedTheme);
+
+  document.getElementById("themeToggle").addEventListener("click", toggleTheme);
+});
+
 async function searchBooks() {
   showMessage("Loading results...", "Search Results");
 
@@ -246,35 +260,3 @@ async function browseGenre() {
   renderResults(books, genreName + " Books");
 }
 
-function setTheme(theme) {
-  const isDarkTheme = theme === "dark";
-  const themeToggleButton = document.getElementById("themeToggle");
-
-  document.body.classList.toggle("dark-mode", isDarkTheme);
-  document.body.classList.toggle("light-mode", !isDarkTheme);
-
-  if (isDarkTheme) {
-    themeToggleButton.textContent = "Light mode";
-  } else {
-    themeToggleButton.textContent = "Dark mode";
-  }
-
-  localStorage.setItem("preferredTheme", theme);
-}
-
-function toggleTheme() {
-  const isDarkTheme = document.body.classList.contains("dark-mode");
-
-  if (isDarkTheme) {
-    setTheme("light");
-  } else {
-    setTheme("dark");
-  }
-}
-
-window.addEventListener("DOMContentLoaded", function () {
-  const savedTheme = localStorage.getItem("preferredTheme") || "light";
-  setTheme(savedTheme);
-
-  document.getElementById("themeToggle").addEventListener("click", toggleTheme);
-});
