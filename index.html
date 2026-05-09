@@ -4,17 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smart Reading Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header class="page-header">
-        <div class="header-main">
-            <div class="header-top-row">
-                <h1>Smart Reading Assistant</h1>
+        <div class="hero-copy">
+            <p class="eyebrow">Smart Reading Assistant</p>
+            <h1>Find your next page-turner with a cleaner, calmer reading search.</h1>
+            <p class="subtitle">Search books, browse by genre, and explore polished results in light or dark mode.</p>
+            <div class="feature-pills" aria-label="Highlights">
+                <span>Fast search</span>
+                <span>Genre browsing</span>
+                <span>Light and dark themes</span>
+            </div>
+        </div>
+        <nav class="tab-bar" aria-label="Main navigation">
+            <button type="button" id="tabDiscover" class="tab-btn tab-btn--active">Discover</button>
+            <button type="button" id="tabStats" class="tab-btn">Stats</button>
+        </nav>
+        <button id="themeToggle" type="button">Dark mode</button>
+    </header>
+
+    <main id="discoverView" class="content-shell">
+        <section class="controls-panel" aria-label="Book search controls">
+            <div class="control-group">
+                <label for="searchInput">Search books</label>
                 <div class="search-row">
-                    <input type="text" id="searchInput" placeholder="Search books..." />
+                    <input type="text" id="searchInput" placeholder="Try 'Dune', 'Atomic Habits', or 'Jane Austen'" />
                     <button type="button" onclick="searchBooks()">Search</button>
                 </div>
+            </div>
+            <div class="control-group">
+                <label for="genreSelect">Browse by genre</label>
                 <div class="genre-row">
                     <select id="genreSelect" aria-label="Choose a genre">
                         <option value="">Choose a genre</option>
@@ -30,14 +54,92 @@
                     <button type="button" onclick="browseGenre()">Browse Genre</button>
                 </div>
             </div>
-            <p class="subtitle">Search books or browse a full list by genre in light or dark mode</p>
-        </div>
-        <button id="themeToggle" type="button">Dark mode</button>
-    </header>
+            <div class="quick-genres" aria-label="Quick genre shortcuts">
+                <button type="button" class="genre-chip" data-genre="fantasy">Fantasy</button>
+                <button type="button" class="genre-chip" data-genre="mystery">Mystery</button>
+                <button type="button" class="genre-chip" data-genre="science_fiction">Sci-Fi</button>
+                <button type="button" class="genre-chip" data-genre="biography">Biography</button>
+                <button type="button" class="genre-chip" data-genre="romance">Romance</button>
+            </div>
+        </section>
 
-    <div id="resultsTitle" class="results-title"></div>
-    <div id="results"></div>
+        <section class="discovery-panel" aria-label="Featured book and reading list">
+            <article class="featured-book">
+                <div class="featured-cover-wrap">
+                    <img id="featuredCover" src="" alt="">
+                </div>
+                <div class="featured-copy">
+                    <p class="section-kicker">Featured pick</p>
+                    <h2 id="featuredTitle"></h2>
+                    <p id="featuredAuthor" class="featured-author"></p>
+                    <p id="featuredDescription" class="featured-description"></p>
+                    <div class="featured-actions">
+                        <button type="button" id="featuredSearch">Explore Similar</button>
+                        <button type="button" id="featuredDetails" class="secondary-button">Details</button>
+                        <button type="button" id="featuredSave" class="secondary-button">Save Book</button>
+                    </div>
+                </div>
+            </article>
+
+            <aside class="reading-list-panel" aria-label="Saved reading list">
+                <div class="section-heading">
+                    <div>
+                        <p class="section-kicker">Your shelf</p>
+                        <h2>Reading List</h2>
+                    </div>
+                    <span id="savedCount" class="saved-count">0</span>
+                </div>
+                <div id="savedBooks" class="saved-books"></div>
+            </aside>
+        </section>
+
+        <section class="results-panel" aria-live="polite">
+            <div id="resultsTitle" class="results-title"></div>
+            <div id="results"></div>
+        </section>
+    </main>
+
+    <section id="statsView" class="content-shell view--hidden" aria-label="Reading statistics">
+        <div class="stats-grid">
+            <div class="stat-card stat-card--neutral">
+                <span class="stat-number" id="statTotalNum">0</span>
+                <span class="stat-label">📚 Total Saved</span>
+            </div>
+            <div class="stat-card stat-card--blue">
+                <span class="stat-number" id="statWantNum">0</span>
+                <span class="stat-label">🔖 Want to Read</span>
+            </div>
+            <div class="stat-card stat-card--amber">
+                <span class="stat-number" id="statReadingNum">0</span>
+                <span class="stat-label">📖 Currently Reading</span>
+            </div>
+            <div class="stat-card stat-card--green">
+                <span class="stat-number" id="statFinishedNum">0</span>
+                <span class="stat-label">✅ Finished</span>
+            </div>
+        </div>
+    </section>
+
+    <div id="bookModal" class="modal-backdrop" hidden>
+        <section class="book-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <button type="button" id="modalClose" class="modal-close" aria-label="Close book details">Close</button>
+            <div class="modal-cover-wrap">
+                <img id="modalCover" src="" alt="">
+            </div>
+            <div class="modal-copy">
+                <p class="section-kicker">Book details</p>
+                <h2 id="modalTitle"></h2>
+                <p id="modalAuthor" class="modal-author"></p>
+                <div id="modalMeta" class="modal-meta-row"></div>
+                <p id="modalDescription" class="modal-description"></p>
+                <div id="modalSubjects" class="modal-subjects"></div>
+                <div class="modal-actions">
+                    <button type="button" id="modalSave" class="secondary-button">Save Book</button>
+                    <a id="modalOpenLibrary" class="open-library-link" href="#" target="_blank" rel="noopener">View on Open Library</a>
+                </div>
+            </div>
+        </section>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>
-
